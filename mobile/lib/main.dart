@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config/constants.dart';
+import 'services/session_service.dart';
 import 'app.dart';
 
 void main() async {
@@ -28,6 +29,9 @@ void main() async {
     url: Constants.supabaseUrl,
     anonKey: Constants.supabaseAnonKey,
   );
+
+  // Bridge Supabase session → backend API auth token
+  SessionService().initialize();
 
   runApp(const ComutShareApp());
 }

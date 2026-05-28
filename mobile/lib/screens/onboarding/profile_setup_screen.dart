@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 import '../../config/routes.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/custom_button.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
@@ -14,9 +15,21 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final _nameController = TextEditingController();
   final _homeController = TextEditingController();
   final _officeController = TextEditingController();
+  final _authService = AuthService();
   String _gender = 'male';
   String _workingHours = '09:00 AM - 05:00 PM';
   bool _isLoading = false;
+
+  void _showError(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade700,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
 
   final List<String> _workingHoursOptions = [
     '08:00 AM - 04:00 PM',
@@ -35,11 +48,21 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   Future<void> _saveProfile() async {
     if (!_isValid) return;
     setState(() => _isLoading = true);
-    // Simulated API call
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() => _isLoading = false);
-    if (mounted) {
+
+    try {
+      await _authService.updateProfile(
+        fullName: _nameController.text.trim(),
+        homeArea: _homeController.text.trim(),
+        officeArea: _officeController.text.trim(),
+        gender: _gender,
+        workingHours: _workingHours,
+      );
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.cnicUpload);
+    } catch (e) {
+      _showError('Could not save profile: ${e.toString()}');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 

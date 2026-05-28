@@ -110,11 +110,12 @@ class RideService {
     required int seats,
     double? efficiency,
   }) async {
-    return await _api.post('/pricing/calculate', body: {
+    final body = <String, dynamic>{
       'distanceKm': distanceKm,
       'petrolRate': petrolRate,
       'seats': seats,
-      if (efficiency != null) 'efficiencyKmPerL': efficiency,
-    });
+    };
+    if (efficiency != null) body['efficiencyKmPerL'] = efficiency;
+    return await _api.post('/pricing/calculate', body: body);
   }
 }

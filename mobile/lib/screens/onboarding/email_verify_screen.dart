@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 import '../../config/routes.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/custom_button.dart';
 
 class EmailVerifyScreen extends StatefulWidget {
@@ -12,31 +13,63 @@ class EmailVerifyScreen extends StatefulWidget {
 
 class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
   final _emailController = TextEditingController();
+  final _authService = AuthService();
   bool _linkSent = false;
   bool _isLoading = false;
 
+  // Blocklist of personal email providers — only corporate domains allowed
+  static const _personalDomains = [
+    '@gmail.com', '@yahoo.com', '@hotmail.com', '@outlook.com',
+    '@icloud.com', '@protonmail.com', '@aol.com', '@live.com',
+  ];
+
   bool get _isValidEmail {
-    final email = _emailController.text.trim();
-    return email.contains('@') && email.contains('.') && !email.endsWith('@gmail.com') && !email.endsWith('@yahoo.com');
+    final email = _emailController.text.trim().toLowerCase();
+    if (!email.contains('@') || !email.contains('.')) return false;
+    return !_personalDomains.any((d) => email.endsWith(d));
+  }
+
+  void _showError(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade700,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<void> _sendVerificationLink() async {
+    if (!_isValidEmail) return;
     setState(() => _isLoading = true);
-    // Simulated API call
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() {
-      _isLoading = false;
-      _linkSent = true;
-    });
+
+    try {
+      await _authService.updateCorporateEmail(_emailController.text.trim());
+      if (!mounted) return;
+      setState(() => _linkSent = true);
+    } catch (e) {
+      _showError('Could not send link: ${e.toString()}');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   Future<void> _checkVerification() async {
     setState(() => _isLoading = true);
-    // Simulated API call
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() => _isLoading = false);
-    if (mounted) {
+
+    try {
+      final verified = await _authService.checkEmailVerified();
+      if (!mounted) return;
+      if (!verified) {
+        _showError('Email not verified yet. Please click the link in your inbox.');
+        return;
+      }
       Navigator.pushReplacementNamed(context, AppRoutes.profileSetup);
+    } catch (e) {
+      _showError('Verification check failed: ${e.toString()}');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -88,8 +121,8 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: AppColors.primary.withOpacity(0.08),
-                    border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+                    color: AppColors.primary.withValues(alpha: 0.08),
+                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
                   ),
                   child: Row(
                     children: [
@@ -119,7 +152,7 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen> {
                         height: 64,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                         ),
                         child: const Icon(Icons.mark_email_read_rounded, color: AppColors.primary, size: 32),
                       ),

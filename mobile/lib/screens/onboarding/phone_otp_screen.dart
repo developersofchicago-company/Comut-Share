@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../config/theme.dart';
 import '../../config/routes.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/custom_button.dart';
 
 class PhoneOtpScreen extends StatefulWidget {
@@ -15,8 +16,20 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
   final _phoneController = TextEditingController();
   final List<TextEditingController> _otpControllers = List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _otpFocusNodes = List.generate(6, (_) => FocusNode());
+  final _authService = AuthService();
   bool _otpSent = false;
   bool _isLoading = false;
+
+  void _showError(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade700,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -34,14 +47,18 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
     if (_phoneController.text.length < 10) return;
     setState(() => _isLoading = true);
 
-    // TODO: Call AuthService.sendOtp
-    await Future.delayed(const Duration(seconds: 1)); // Simulated
-
-    setState(() {
-      _isLoading = false;
-      _otpSent = true;
-    });
-    _otpFocusNodes[0].requestFocus();
+    try {
+      await _authService.sendOtp(_phoneController.text);
+      if (!mounted) return;
+      setState(() {
+        _otpSent = true;
+      });
+      _otpFocusNodes[0].requestFocus();
+    } catch (e) {
+      _showError('Could not send OTP: ${e.toString()}');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   Future<void> _verifyOtp() async {
@@ -49,12 +66,18 @@ class _PhoneOtpScreenState extends State<PhoneOtpScreen> {
     if (otp.length != 6) return;
     setState(() => _isLoading = true);
 
-    // TODO: Call AuthService.verifyOtp
-    await Future.delayed(const Duration(seconds: 1)); // Simulated
-
-    setState(() => _isLoading = false);
-    if (mounted) {
+    try {
+      final response = await _authService.verifyOtp(_phoneController.text, otp);
+      if (response.user == null) {
+        _showError('Invalid OTP. Please try again.');
+        return;
+      }
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.emailVerify);
+    } catch (e) {
+      _showError('Verification failed: ${e.toString()}');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 

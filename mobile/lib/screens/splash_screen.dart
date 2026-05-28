@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../config/theme.dart';
 import '../config/routes.dart';
+import '../services/session_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -29,12 +30,14 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     );
     _controller.forward();
 
-    // Navigate after splash
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        // TODO: Check auth state — if logged in, go to home; else welcome
-        Navigator.pushReplacementNamed(context, AppRoutes.welcome);
-      }
+    // Navigate after splash — route based on auth state
+    Future.delayed(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      final hasSession = SessionService().isAuthenticated;
+      Navigator.pushReplacementNamed(
+        context,
+        hasSession ? AppRoutes.home : AppRoutes.welcome,
+      );
     });
   }
 
@@ -115,20 +118,3 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 }
 
-/// Helper widget since AnimatedBuilder requires an animation and builder.
-class AnimatedBuilder extends AnimatedWidget {
-  final Widget Function(BuildContext context, Widget? child) builder;
-
-  const AnimatedBuilder({
-    super.key,
-    required super.listenable,
-    required this.builder,
-  });
-
-  Animation<double> get animation => listenable as Animation<double>;
-
-  @override
-  Widget build(BuildContext context) {
-    return builder(context, null);
-  }
-}

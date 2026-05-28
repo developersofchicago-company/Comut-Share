@@ -1,41 +1,48 @@
 import '../models/transaction_model.dart';
 import 'api_service.dart';
 
-/// Handles wallet operations: balance, deposits, withdrawals, transaction history.
+/// Wallet operations: balance, deposits, withdrawals, transaction history.
 class WalletService {
   final ApiService _api = ApiService();
 
-  // ── Get wallet balance ─────────────────────────────
   Future<double> getBalance() async {
     final response = await _api.get('/wallet/balance');
     return (response['balance'] as num).toDouble();
   }
 
-  // ── Deposit via JazzCash / EasyPaisa ───────────────
-  Future<Map<String, dynamic>> deposit(double amount, String provider) async {
-    return await _api.post('/wallet/deposit', body: {
+  /// Top up via JazzCash / EasyPaisa.
+  /// [paymentReference] is the txn ID from the payment provider — the backend
+  /// validates it before crediting the wallet.
+  Future<double> topup({
+    required double amount,
+    required String paymentMethod,
+    required String paymentReference,
+  }) async {
+    final response = await _api.post('/wallet/topup', body: {
       'amount': amount,
-      'provider': provider, // 'jazzcash' | 'easypaisa'
+      'payment_method': paymentMethod, // 'jazzcash' | 'easypaisa'
+      'payment_reference': paymentReference,
     });
+    return (response['balance'] as num).toDouble();
   }
 
-  // ── Withdraw to bank account ───────────────────────
-  Future<Map<String, dynamic>> withdraw(double amount, String bankAccount) async {
-    return await _api.post('/wallet/withdraw', body: {
+  /// Withdraw to bank account via 1LINK.
+  Future<double> withdraw({
+    required double amount,
+    required String bankAccount,
+    required String bankName,
+  }) async {
+    final response = await _api.post('/wallet/withdraw', body: {
       'amount': amount,
       'bank_account': bankAccount,
+      'bank_name': bankName,
     });
+    return (response['balance'] as num).toDouble();
   }
 
-  // ── Transaction history ────────────────────────────
-  Future<List<TransactionModel>> getTransactions({int page = 1, int limit = 20}) async {
-    final response = await _api.get('/wallet/transactions?page=$page&limit=$limit');
+  Future<List<TransactionModel>> getTransactions({int limit = 50}) async {
+    final response = await _api.get('/wallet/transactions?limit=$limit');
     final list = response['transactions'] as List<dynamic>;
     return list.map((t) => TransactionModel.fromJson(t as Map<String, dynamic>)).toList();
-  }
-
-  // ── Monthly savings report ─────────────────────────
-  Future<Map<String, dynamic>> getMonthlySavings() async {
-    return await _api.get('/wallet/savings-report');
   }
 }

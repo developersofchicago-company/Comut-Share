@@ -21,11 +21,8 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final width = double.infinity;
-
     return SizedBox(
-      width: width,
+      width: double.infinity,
       height: 56,
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -40,7 +37,7 @@ class CustomButton extends StatelessWidget {
           boxShadow: enabled && !isLoading && !isSecondary
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.2),
+                    color: AppColors.primary.withValues(alpha: 0.2),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),

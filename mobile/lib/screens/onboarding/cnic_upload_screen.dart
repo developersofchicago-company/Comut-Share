@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../config/theme.dart';
 import '../../config/routes.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/custom_button.dart';
 
 class CnicUploadScreen extends StatefulWidget {
@@ -11,37 +13,59 @@ class CnicUploadScreen extends StatefulWidget {
 }
 
 class _CnicUploadScreenState extends State<CnicUploadScreen> {
-  bool _hasFront = false;
-  bool _hasBack = false;
+  final _picker = ImagePicker();
+  final _authService = AuthService();
+  String? _frontPath;
+  String? _backPath;
   bool _isLoading = false;
 
-  Future<void> _pickFrontImage() async {
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 800)); // Simulated camera/gallery pick
-    setState(() {
-      _isLoading = false;
-      _hasFront = true;
-    });
+  bool get _hasFront => _frontPath != null;
+  bool get _hasBack => _backPath != null;
+
+  void _showError(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade700,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
-  Future<void> _pickBackImage() async {
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 800));
-    setState(() {
-      _isLoading = false;
-      _hasBack = true;
-    });
+  Future<void> _pickImage({required bool isFront}) async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 85,
+        maxWidth: 1920,
+      );
+      if (image == null) return;
+      setState(() {
+        if (isFront) {
+          _frontPath = image.path;
+        } else {
+          _backPath = image.path;
+        }
+      });
+    } catch (e) {
+      _showError('Could not capture photo: ${e.toString()}');
+    }
   }
 
   Future<void> _submitVerification() async {
+    if (!_hasFront || !_hasBack) return;
     setState(() => _isLoading = true);
-    // Simulated upload to Supabase storage + CNIC API
-    await Future.delayed(const Duration(seconds: 1.5));
-    setState(() => _isLoading = false);
 
-    if (mounted) {
+    try {
+      await _authService.uploadCnic(_frontPath!, _backPath!);
+      if (!mounted) return;
       // Direct user to home dashboard
       Navigator.pushNamedAndRemoveUntil(context, AppRoutes.home, (route) => false);
+    } catch (e) {
+      _showError('Upload failed: ${e.toString()}');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -73,7 +97,7 @@ class _CnicUploadScreenState extends State<CnicUploadScreen> {
 
               // CNIC Front Upload Box
               GestureDetector(
-                onTap: _pickFrontImage,
+                onTap: () => _pickImage(isFront: true),
                 child: Container(
                   width: double.infinity,
                   height: 140,
@@ -112,7 +136,7 @@ class _CnicUploadScreenState extends State<CnicUploadScreen> {
 
               // CNIC Back Upload Box
               GestureDetector(
-                onTap: _pickBackImage,
+                onTap: () => _pickImage(isFront: false),
                 child: Container(
                   width: double.infinity,
                   height: 140,

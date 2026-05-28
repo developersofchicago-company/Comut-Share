@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 import '../../config/routes.dart';
+import '../bookings/my_bookings_screen.dart';
+import '../wallet/wallet_screen.dart';
+import '../profile/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -51,11 +54,11 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return const _ExploreTab();
       case 1:
-        return const Center(child: Text('My Trips Screen Placeholder'));
+        return const MyBookingsScreen();
       case 2:
-        return const Center(child: Text('Wallet Screen Placeholder'));
+        return const WalletScreen();
       case 3:
-        return const Center(child: Text('Profile Screen Placeholder'));
+        return const ProfileScreen();
       default:
         return const _ExploreTab();
     }
@@ -75,7 +78,7 @@ class _ExploreTab extends StatelessWidget {
           children: [
             // Header
             Row(
-              mainAxisAlignment: MainAxisAlignment.between,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,15 +90,15 @@ class _ExploreTab extends StatelessWidget {
                     const SizedBox(height: 4),
                     const Text(
                       'Usman Imran',
-                      style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.extrabold),
+                      style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800),
                     ),
                   ],
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
-                    border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Row(
@@ -132,7 +135,7 @@ class _ExploreTab extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
+                              color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(Icons.hail_rounded, color: AppColors.primary, size: 28),
@@ -169,7 +172,7 @@ class _ExploreTab extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF3B82F6).withOpacity(0.1),
+                              color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(Icons.directions_car_rounded, color: Color(0xFF3B82F6), size: 28),
@@ -230,7 +233,7 @@ class _ExploreTab extends StatelessWidget {
                     children: [
                       Text(
                         'Rs. 409.78',
-                        style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.extrabold, fontSize: 18),
+                        style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w800, fontSize: 18),
                       ),
                       SizedBox(height: 2),
                       Text(
