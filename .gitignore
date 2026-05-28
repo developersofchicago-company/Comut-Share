@@ -1,0 +1,61 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+.pnpm-store/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Environments & Secrets
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+.env.*.local
+
+# IDEs and editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Next.js Build Output
+.next/
+out/
+
+# Flutter/Dart Build Output
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.generated.dart
+
+# Mobile OS specific build files
+/mobile/ios/.generated/
+/mobile/android/.gradle/
+/mobile/android/local.properties
+/mobile/ios/Flutter/Generated.xcconfig
+/mobile/ios/Flutter/flutter_export_environment.sh
+/mobile/ios/Flutter/App.framework
+/mobile/ios/Flutter/Flutter.framework
+/mobile/ios/Flutter/Flutter.podspec
