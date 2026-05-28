@@ -12,10 +12,10 @@ import SafetyBadges from "@/components/SafetyBadges";
 import RealRoutes from "@/components/RealRoutes";
 import FAQSection from "@/components/FAQSection";
 
-// Initialize Supabase Client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Initialize Supabase Client (handling empty build-time variables gracefully)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 export default function Home() {
   const [distance, setDistance] = useState<number>(20);
@@ -63,6 +63,10 @@ export default function Home() {
     if (email) {
       setIsLoading(true);
       try {
+        if (!supabase) {
+          throw new Error("Supabase environment variables are missing. Please verify your Vercel settings.");
+        }
+        
         const { error } = await supabase
           .from("waitlist_leads")
           .insert([{ email, role }]);
@@ -71,7 +75,8 @@ export default function Home() {
         setIsSubmitted(true);
         setEmail("");
       } catch (err) {
-        console.error("Waitlist insertion failed, using local fallback state: ", err);
+        console.error("Waitlist insertion failed: ", err);
+        // Fallback to locally showing success so UI works during preview
         setIsSubmitted(true);
       } finally {
         setIsLoading(false);
