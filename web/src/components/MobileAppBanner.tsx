@@ -6,7 +6,7 @@ export default function MobileAppBanner() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    const target = new Date("2026-08-01T00:00:00Z").getTime();
+    const target = new Date("2026-06-13T00:00:00Z").getTime();
     const tick = () => {
       const diff = target - Date.now();
       if (diff <= 0) return;
@@ -36,7 +36,7 @@ export default function MobileAppBanner() {
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#A6CE39]/10 border border-[#A6CE39]/20 text-[#A6CE39] text-[11px] font-bold tracking-wide">
               <span className="w-1.5 h-1.5 rounded-full bg-[#A6CE39] animate-pulse" />
-              Mobile App — Launching Summer 2026
+              Mobile App — Launching in 15 days
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
               ComutShare <span className="text-[#A6CE39]">Mobile</span> is almost here

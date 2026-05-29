@@ -430,7 +430,7 @@ export default function Home() {
         <div className="max-w-xl mx-auto text-center space-y-8 relative">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white">Secure Your Launch Access</h2>
           <p className="text-slate-400 text-sm">
-            We are launching closed corporate pilots in Karachi in Summer 2026. Register your email or request an enterprise integration for your organization.
+            We are launching our closed corporate pilot in Karachi in 15 days. Register your email now to secure VIP launch access — first 500 signups get their first month free.
           </p>
 
           {isSubmitted ? (
