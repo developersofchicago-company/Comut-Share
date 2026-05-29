@@ -1,39 +1,66 @@
 export default function ComparisonTable() {
-  const rows = [
-    { feature: "Monthly Cost (20km)", solo: "Rs. 60,000+", careem: "Rs. 39,600", comut: "Rs. 24,860", highlight: true },
-    { feature: "Driver Verification", solo: "❌ None", careem: "Basic ID", comut: "✅ CNIC + Corp Email", highlight: false },
-    { feature: "Price Transparency", solo: "Fixed fuel cost", careem: "Surge pricing", comut: "✅ OGRA formula", highlight: false },
-    { feature: "Recurring Schedule", solo: "N/A", careem: "Book daily", comut: "✅ Auto-match", highlight: false },
-    { feature: "Women-Only Mode", solo: "❌", careem: "❌", comut: "✅ Built-in", highlight: false },
-    { feature: "CO2 Reduction", solo: "0%", careem: "0%", comut: "✅ Up to 75%", highlight: false },
-    { feature: "Cost Trend", solo: "📈 Rising", careem: "📈 Rising", comut: "📉 Splits with riders", highlight: false },
+  const features = [
+    { feature: "Verified corporate identity", comutshare: true, careem: false, facebook: false },
+    { feature: "CNIC background check", comutshare: true, careem: false, facebook: false },
+    { feature: "Live OGRA-anchored pricing", comutshare: true, careem: false, facebook: false },
+    { feature: "Escrow payment protection", comutshare: true, careem: true, facebook: false },
+    { feature: "In-app ride chat", comutshare: true, careem: true, facebook: false },
+    { feature: "Reputation & rating system", comutshare: true, careem: true, facebook: false },
+    { feature: "Corporate HR dashboard", comutshare: true, careem: false, facebook: false },
+    { feature: "Subsidy & expense management", comutshare: true, careem: false, facebook: false },
+    { feature: "Cost (20 km one-way)", comutshare: "Rs. ~283", careem: "Rs. ~900", facebook: "Varies" },
   ];
 
-  return (
-    <section className="py-24 px-6 border-t border-[#1E1E1E] bg-[#0A0A0A]">
-      <div className="max-w-5xl mx-auto space-y-12">
-        <div className="text-center space-y-4">
-          <span className="text-xs font-extrabold text-[#A6CE39] uppercase tracking-widest">Why Switch?</span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white">ComutShare vs The Alternatives</h2>
-        </div>
+  const Check = () => (
+    <svg className="w-5 h-5 text-[#A6CE39] mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  );
+  const Cross = () => (
+    <svg className="w-5 h-5 text-slate-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  );
 
-        <div className="overflow-x-auto rounded-2xl border border-[#1E1E1E]">
+  return (
+    <section className="py-24 px-6">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+          <span className="text-xs uppercase font-bold tracking-widest text-[#A6CE39]">Comparison</span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white">Why not just use Careem?</h2>
+          <p className="text-slate-400">Ride-hailing solves convenience, not cost or trust. ComutShare is built for the daily commuter, not the occasional ride.</p>
+        </div>
+        <div className="rounded-2xl border border-[#1E1E1E] overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#121212] border-b border-[#1E1E1E]">
-                <th className="text-left px-6 py-4 font-bold text-slate-400 text-xs uppercase tracking-wider">Feature</th>
-                <th className="px-6 py-4 font-bold text-slate-500 text-xs uppercase tracking-wider text-center">Solo Driving</th>
-                <th className="px-6 py-4 font-bold text-slate-500 text-xs uppercase tracking-wider text-center">Careem / inDrive</th>
-                <th className="px-6 py-4 font-bold text-[#A6CE39] text-xs uppercase tracking-wider text-center">ComutShare ✨</th>
+              <tr className="bg-[#0F0F0F] border-b border-[#1E1E1E]">
+                <th className="text-left px-6 py-4 text-slate-500 font-bold text-xs uppercase tracking-wider w-1/2">Feature</th>
+                <th className="px-6 py-4 text-center">
+                  <span className="text-[#A6CE39] font-extrabold text-sm">ComutShare</span>
+                </th>
+                <th className="px-6 py-4 text-center text-slate-400 font-bold text-sm">Careem</th>
+                <th className="px-6 py-4 text-center text-slate-400 font-bold text-sm">FB Groups</th>
               </tr>
             </thead>
-            <tbody>
-              {rows.map((row, i) => (
-                <tr key={i} className={`border-b border-[#1E1E1E] ${row.highlight ? "bg-[#A6CE39]/5" : "bg-[#0A0A0A]"}`}>
-                  <td className="px-6 py-4 font-semibold text-slate-300 text-xs">{row.feature}</td>
-                  <td className="px-6 py-4 text-center text-slate-500 text-xs">{row.solo}</td>
-                  <td className="px-6 py-4 text-center text-slate-500 text-xs">{row.careem}</td>
-                  <td className={`px-6 py-4 text-center font-bold text-xs ${row.highlight ? "text-[#A6CE39] text-sm" : "text-[#A6CE39]"}`}>{row.comut}</td>
+            <tbody className="divide-y divide-[#1A1A1A]">
+              {features.map((row) => (
+                <tr key={row.feature} className="hover:bg-[#0F0F0F]/60 transition-colors">
+                  <td className="px-6 py-3.5 text-slate-300 font-medium">{row.feature}</td>
+                  <td className="px-6 py-3.5 text-center">
+                    {typeof row.comutshare === "boolean" ? (row.comutshare ? <Check /> : <Cross />) : (
+                      <span className="font-extrabold text-[#A6CE39]">{row.comutshare}</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-3.5 text-center">
+                    {typeof row.careem === "boolean" ? (row.careem ? <Check /> : <Cross />) : (
+                      <span className="font-bold text-slate-400">{row.careem}</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-3.5 text-center">
+                    {typeof row.facebook === "boolean" ? (row.facebook ? <Check /> : <Cross />) : (
+                      <span className="font-bold text-slate-400">{row.facebook}</span>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -1,34 +1,52 @@
 export default function ProblemSection() {
-  const stats = [
-    { icon: "🔥", stat: "Rs. 820/day", label: "Average 20km commuter burns in petrol alone" },
-    { icon: "⏰", stat: "2.5 hrs/day", label: "Average Karachi round-trip commute time" },
-    { icon: "🌫️", stat: "4.8 kg/day", label: "CO2 footprint of solo driving daily" },
+  const problems = [
+    {
+      stat: "Rs. 45/km",
+      label: "Careem avg rate",
+      desc: "A 20 km commute costs Rs. 900 one-way — Rs. 39,600/month. That is nearly a full mid-level salary gone on transport alone.",
+      icon: "🚖",
+    },
+    {
+      stat: "2–3 hrs",
+      label: "daily in traffic",
+      desc: "Karachi's road network was built for 3 million — it now carries 16 million. Peak-hour commutes from DHA to I.I. Chundrigar regularly exceed 90 minutes one-way.",
+      icon: "🚦",
+    },
+    {
+      stat: "Zero trust",
+      label: "in stranger rides",
+      desc: "Existing carpools rely on unverified Facebook groups. No identity checks, no corporate accountability, no safety net if something goes wrong.",
+      icon: "⚠️",
+    },
   ];
 
   return (
-    <section id="problem" className="py-24 px-6 border-t border-[#1E1E1E] bg-[#0A0A0A]">
-      <div className="max-w-7xl mx-auto space-y-12">
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="text-xs font-extrabold text-red-400 uppercase tracking-widest">The Daily Reality</span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-            Every Morning, 4 Million Karachiites <br className="hidden sm:block" />
-            <span className="text-red-400">Burn Money Sitting in Traffic</span>
-          </h2>
+    <section id="problem" className="py-24 px-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+          <span className="text-xs uppercase font-bold tracking-widest text-[#A6CE39]">The Problem</span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white">Karachi&apos;s commute is broken</h2>
+          <p className="text-slate-400">
+            Every working day, hundreds of thousands of corporate employees burn money, time, and carbon making the exact same journey — alone.
+          </p>
         </div>
-
-        <div className="grid sm:grid-cols-3 gap-6">
-          {stats.map((item, i) => (
-            <div key={i} className="bg-[#121212] border border-[#1E1E1E] rounded-2xl p-8 text-center space-y-3 hover:border-[#A6CE39]/20 transition-all">
-              <span className="text-4xl block">{item.icon}</span>
-              <span className="text-3xl font-extrabold text-white block">{item.stat}</span>
-              <span className="text-xs text-slate-500 block leading-relaxed">{item.label}</span>
+        <div className="grid md:grid-cols-3 gap-6">
+          {problems.map((p) => (
+            <div key={p.label} className="bg-[#0F0F0F] border border-[#1E1E1E] rounded-2xl p-8 space-y-4 hover:border-[#A6CE39]/15 transition-all">
+              <span className="text-4xl">{p.icon}</span>
+              <div>
+                <span className="block text-3xl font-extrabold text-white">{p.stat}</span>
+                <span className="text-xs uppercase font-bold tracking-wider text-[#A6CE39]">{p.label}</span>
+              </div>
+              <p className="text-slate-400 text-sm leading-relaxed">{p.desc}</p>
             </div>
           ))}
         </div>
-
-        <p className="text-center text-slate-400 text-sm max-w-2xl mx-auto italic leading-relaxed">
-          &ldquo;What if your office colleague 3 streets away is driving the same route at the same time — and you could split the cost?&rdquo;
-        </p>
+        <div className="mt-12 p-6 rounded-2xl bg-[#A6CE39]/5 border border-[#A6CE39]/15 text-center">
+          <p className="text-slate-300 text-sm">
+            <span className="font-bold text-white">ComutShare solves all three</span> — by pooling verified corporate colleagues travelling the same route, splitting real OGRA-anchored fuel costs, and keeping every ride inside a trusted closed loop.
+          </p>
+        </div>
       </div>
     </section>
   );
